@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Escape Room Tecnología 2º ESO</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+
+  <body>
+    <a-scene vr-mode-ui="enabled: true">
+      <!-- Entorno básico -->
+      <a-sky color="#202530"></a-sky>
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; intensity: 0.8" position="1 2 1"></a-entity>
+
+      <!-- Suelo y paredes -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#333"></a-plane>
+      <a-box position="0 2 -5" depth="0.2" height="4" width="6" color="#444"></a-box> <!-- pared frontal -->
+      <a-box position="-5 2 0" depth="10" height="4" width="0.2" color="#444"></a-box> <!-- pared izquierda -->
+      <a-box position="5 2 0" depth="10" height="4" width="0.2" color="#444"></a-box> <!-- pared derecha -->
+
+      <!-- Cámara con cursor para hacer clic -->
+      <a-entity position="0 1.6 3">
+        <a-camera wasd-controls look-controls>
+          <a-cursor raycaster="objects: .clickable"></a-cursor>
+        </a-camera>
+      </a-entity>
+
+      <!-- Panel de instrucciones -->
+      <a-plane position="0 2 -2.5" width="3.5" height="1.8" color="#222" material="opacity:0.9">
+        <a-text value="Taller de Tecnología Bloqueado
+1) Identifica el componente correcto
+2) Cierra el circuito para encender la luz"
+          align="center" color="#FFFFFF" width="3.2" position="0 0 0.01">
+        </a-text>
+      </a-plane>
+
+      <!-- ================= PRUEBA 1: COMPONENTE CORRECTO ================= -->
+      <a-text value="Prueba 1: ¿Qué es una resistencia?"
+              color="#FFFFFF" width="3"
+              position="-2.8 2 -1" rotation="0 20 0"></a-text>
+
+      <!-- Tres "componentes" representados por cajas con texto encima -->
+      <!-- Opción incorrecta: pila -->
+      <a-box id="optBattery" class="clickable"
+             position="-3.5 1.1 -2" depth="0.3" height="0.3" width="0.8" color="#555"></a-box>
+      <a-text value="Pila" color="#FFFFFF" width="2"
+              position="-3.5 1.4 -1.9" align="center"></a-text>
+
+      <!-- Opción correcta: resistencia -->
+      <a-box id="optResistor" class="clickable"
+             position="-2.8 1.1 -2.4" depth="0.3" height="0.3" width="0.8" color="#555"></a-box>
+      <a-text value="Resistencia" color="#FFFFFF" width="2.5"
+              position="-2.8 1.4 -2.3" align="center"></a-text>
+
+      <!-- Opción incorrecta: interruptor -->
+      <a-box id="optSwitch" class="clickable"
+             position="-2.1 1.1 -2" depth="0.3" height="0.3" width="0.8" color="#555"></a-box>
+      <a-text value="Interruptor" color="#FFFFFF" width="2.5"
+              position="-2.1 1.4 -1.9" align="center"></a-text>
+
+      <!-- Estado prueba 1 -->
+      <a-text id="status1" value="Estado: sin resolver"
+              color="#FFCC00" width="2.5"
+              position="-2.8 0.7 -2.2" rotation="0 20 0"></a-text>
+
+      <!-- ================= PRUEBA 2: CIRCUITO SENCILLO ================= -->
+      <a-text value="Prueba 2: Cierra el circuito"
+              color="#FFFFFF" width="3"
+              position="2.5 2 -1" rotation="0 -20 0"></a-text>
+
+      <!-- Representación simple: pila - interruptor - bombilla -->
+      <!-- Pila -->
+      <a-box position="1.8 1.1 -2.3" depth="0.3" height="0.4" width="0.6" color="#884400"></a-box>
+      <a-text value="Pila" color="#FFFFFF" width="2"
+              position="1.8 1.5 -2.2" align="center"></a-text>
+
+      <!-- Interruptor (clicable: abre/cierra circuito) -->
+      <a-box id="switchCircuit" class="clickable"
+             position="2.6 1.1 -2.3" depth="0.2" height="0.2" width="0.6" color="#555"></a-box>
+      <a-text id="switchLabel" value="Interruptor (abierto)" color="#FFFFFF" width="3"
+              position="2.6 1.5 -2.2" align="center"></a-text>
+
+      <!-- Bombilla -->
+      <a-sphere id="bulb" position="3.4 1.2 -2.3" radius="0.18" color="#222"></a-sphere>
+      <a-text value="Bombilla" color="#FFFFFF" width="2"
+              position="3.4 1.5 -2.2" align="center"></a-text>
+
+      <!-- Estado prueba 2 -->
+      <a-text id="status2" value="Estado: sin resolver"
+              color="#FFCC00" width="2.5"
+              position="2.6 0.7 -2.2" rotation="0 -20 0"></a-text>
+
+      <!-- ================= PUERTA FINAL ================= -->
+      <a-box id="door" position="0 1.5 -4.9" depth="0.1" height="3" width="2" color="#660000"></a-box>
+      <a-text value="PUERTA BLOQUEADA" color="#FF5555" width="4"
+              position="0 3.1 -4.8" align="center"></a-text>
+
+      <!-- Panel de estado general -->
+      <a-plane position="0 0.8 -3.5" width="3" height="1" color="#222">
+        <a-text id="globalStatus"
+                value="Resuelve las 2 pruebas
+para abrir la puerta"
+                color="#FFFFFF" width="2.8"
+                position="0 0 0.01" align="center"></a-text>
+      </a-plane>
+
+      <!-- Mensaje final -->
+      <a-text id="winMessage"
+              value="¡Has desbloqueado el taller de Tecnología!"
+              color="#00FFAA" width="6"
+              position="0 2.4 -3.5" align="center"
+              visible="false"></a-text>
+
+      <!-- ================= LÓGICA EN JAVASCRIPT ================= -->
+      <script>
+        let puzzle1Solved = false;
+        let puzzle2Solved = false;
+
+        // ---------- PRUEBA 1: COMPONENTE CORRECTO ----------
+        const optBattery = document.querySelector('#optBattery');
+        const optResistor = document.querySelector('#optResistor');
+        const optSwitch = document.querySelector('#optSwitch');
+        const status1 = document.querySelector('#status1');
+
+        function wrongComponent(el) {
+          if (puzzle1Solved) return;
+          el.setAttribute('color', '#880000');
+          status1.setAttribute('value', 'Incorrecto. Piensa en el símbolo de resistencia.');
+          status1.setAttribute('color', '#FF5555');
+        }
+
+        optBattery.addEventListener('click', () => wrongComponent(optBattery));
+        optSwitch.addEventListener('click', () => wrongComponent(optSwitch));
+
+        optResistor.addEventListener('click', () => {
+          if (puzzle1Solved) return;
+          puzzle1Solved = true;
+          optResistor.setAttribute('color', '#00AA00');
+          status1.setAttribute('value', 'Estado: resuelto');
+          status1.setAttribute('color', '#00FF00');
+          updateGlobalStatus();
+        });
+
+        // ---------- PRUEBA 2: CIRCUITO SENCILLO ----------
+        const switchCircuit = document.querySelector('#switchCircuit');
+        const switchLabel = document.querySelector('#switchLabel');
+        const bulb = document.querySelector('#bulb');
+        const status2 = document.querySelector('#status2');
+
+        let circuitClosed = false;
+
+        switchCircuit.addEventListener('click', () => {
+          if (puzzle2Solved) return;
+
+          circuitClosed = !circuitClosed;
+
+          if (circuitClosed) {
+            switchCircuit.setAttribute('color', '#00AA00');
+            switchLabel.setAttribute('value', 'Interruptor (cerrado)');
+            bulb.setAttribute('color', '#FFFF33');
+            status2.setAttribute('value', 'Estado: resuelto');
+            status2.setAttribute('color', '#00FF00');
+            puzzle2Solved = true;
+            updateGlobalStatus();
+          } else {
+            switchCircuit.setAttribute('color', '#555');
+            switchLabel.setAttribute('value', 'Interruptor (abierto)');
+            bulb.setAttribute('color', '#222');
+            status2.setAttribute('value', 'Estado: sin resolver');
+            status2.setAttribute('color', '#FFCC00');
+            puzzle2Solved = false;
+            updateGlobalStatus();
+          }
+        });
+
+        // ---------- ESTADO GLOBAL Y PUERTA ----------
+        const door = document.querySelector('#door');
+        const globalStatus = document.querySelector('#globalStatus');
+        const winMessage = document.querySelector('#winMessage');
+
+        function updateGlobalStatus() {
+          if (puzzle1Solved && puzzle2Solved) {
+            globalStatus.setAttribute('value', '¡Pruebas resueltas!\nLa puerta se está abriendo...');
+            globalStatus.setAttribute('color', '#00FFAA');
+
+            // Abrir puerta: hacerla pequeña y transparente
+            door.setAttribute('color', '#004400');
+            door.setAttribute('material', 'opacity: 0.2');
+            door.setAttribute('height', '0.5');
+            door.setAttribute('position', '0 0.5 -4.9');
+
+            winMessage.setAttribute('visible', 'true');
+          } else {
+            let text = 'Resuelve las 2 pruebas\npara abrir la puerta';
+            if (puzzle1Solved && !puzzle2Solved) {
+              text = 'Prueba 1 resuelta.\nFalta la Prueba 2.';
+            }
+            if (!puzzle1Solved && puzzle2Solved) {
+              text = 'Prueba 2 resuelta.\nFalta la Prueba 1.';
+            }
+            globalStatus.setAttribute('value', text);
+            globalStatus.setAttribute('color', '#FFFFFF');
+          }
+        }
+      </script>
+    </a-scene>
+  </body>
+</html>
