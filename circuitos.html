@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ElectricVR</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  </head>
+
+  <body>
+    <a-scene background="color: #111">
+
+      <!-- Luz general -->
+      <a-light type="ambient" intensity="0.6"></a-light>
+      <a-light type="point" intensity="1" position="2 4 2"></a-light>
+
+      <!-- Suelo -->
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#222"></a-plane>
+
+      <!-- Mesa de trabajo -->
+      <a-box position="0 0.5 -2" width="4" height="0.2" depth="2" color="#444"></a-box>
+
+      <!-- PILA -->
+      <a-box id="battery" position="-1 1 -2" depth="0.5" height="0.5" width="0.5" color="red"></a-box>
+
+      <!-- INTERRUPTOR -->
+      <a-box id="switch" position="0 1 -2" depth="0.3" height="0.3" width="0.3" color="yellow"
+             event-set__click="_event: click; color: green"></a-box>
+
+      <!-- BOMBILLA -->
+      <a-sphere id="bulb" position="1 1 -2" radius="0.3" color="gray"></a-sphere>
+
+      <!-- LUZ de la bombilla -->
+      <a-light id="bulbLight" type="point" intensity="0" color="yellow" position="1 1 -2"></a-light>
+
+      <!-- Cámara con cursor -->
+      <a-entity position="0 1.6 2">
+        <a-camera>
+          <a-cursor></a-cursor>
+        </a-camera>
+      </a-entity>
+
+      <!-- Script de lógica -->
+      <script>
+        let circuitOn = false;
+
+        const switchEl = document.querySelector("#switch");
+        const bulb = document.querySelector("#bulb");
+        const light = document.querySelector("#bulbLight");
+
+        switchEl.addEventListener("click", () => {
+          circuitOn = !circuitOn;
+
+          if (circuitOn) {
+            bulb.setAttribute("color", "orange");
+            light.setAttribute("intensity", "1.5");
+          } else {
+            bulb.setAttribute("color", "gray");
+            light.setAttribute("intensity", "0");
+          }
+        });
+      </script>
+
+    </a-scene>
+  </body>
+</html>
